@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>相鉄フレッサイン京都清水五条 — Guest Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Jost:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <style>
+    :root {
+      --navy:      #0b1f24;
+      --navy-mid:  #102830;
+      --navy-card: #143138;
+      --teal:      #1C8A97;
+      --teal-lt:   #3db8c8;
+      --teal-dim:  rgba(28,138,151,.18);
+      --teal-glow: rgba(28,138,151,.12);
+      --white:     #f0f8f9;
+      --white-dim: rgba(240,248,249,.55);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,.45);
+      --shadow-sm: 0 4px 16px rgba(0,0,0,.3);
+      --radius:    16px;
+      --radius-sm: 10px;
+      --serif:     'Cormorant Garamond', Georgia, serif;
+      --sans:      'Jost', 'Noto Sans JP', 'Noto Sans SC', sans-serif;
+      --dur:       .3s;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background-color: var(--navy);
+      color: var(--white);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 env(safe-area-inset-bottom);
+      overflow-x: hidden;
+    }
+
+    /* Ambient teal glow */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(28,138,151,.18) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 110% 80%, rgba(28,138,151,.1) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Grain texture */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: .035;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: 0 20px;
+    }
+
+    /* ── Language switcher ────────────────────────────────────── */
+    .lang-bar {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 16px 0 0;
+      animation: fadeDown .5s ease both;
+    }
+
+    .lang-btn {
+      font-family: var(--sans);
+      font-size: .68rem;
+      font-weight: 400;
+      letter-spacing: .06em;
+      padding: 5px 11px;
+      border-radius: 20px;
+      border: 1px solid rgba(28,138,151,.35);
+      background: transparent;
+      color: var(--white-dim);
+      cursor: pointer;
+      transition: all var(--dur) ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .lang-btn:hover {
+      border-color: var(--teal);
+      color: var(--teal-lt);
+    }
+    .lang-btn.active {
+      background: var(--teal-dim);
+      border-color: var(--teal);
+      color: var(--teal-lt);
+      font-weight: 500;
+    }
+
+    /* ── Header ───────────────────────────────────────────────── */
+    header {
+      padding: 28px 0 28px;
+      text-align: center;
+      animation: fadeDown .7s .1s ease both;
+    }
+
+    .hotel-eyebrow {
+      font-weight: 300;
+      font-size: .65rem;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: var(--teal-lt);
+      margin-bottom: 12px;
+    }
+
+    .hotel-name-ja {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      font-size: 1.1rem;
+      line-height: 1.55;
+      color: var(--white);
+      letter-spacing: .08em;
+      margin-bottom: 4px;
+    }
+
+    .hotel-name-en {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: 1.5rem;
+      line-height: 1.2;
+      color: var(--white);
+      letter-spacing: .04em;
+    }
+
+    .teal-rule {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      margin: 16px auto 18px;
+    }
+    .teal-rule span {
+      display: block;
+      height: 1px;
+      width: 44px;
+      background: linear-gradient(90deg, transparent, var(--teal));
+    }
+    .teal-rule span:last-child {
+      background: linear-gradient(90deg, var(--teal), transparent);
+    }
+    .teal-rule i { color: var(--teal); font-size: .55rem; }
+
+    .hotel-welcome {
+      font-weight: 300;
+      font-size: .88rem;
+      line-height: 1.7;
+      color: var(--white-dim);
+      max-width: 300px;
+      margin: 0 auto;
+      letter-spacing: .02em;
+    }
+
+    /* ── Section label ────────────────────────────────────────── */
+    .section-label {
+      font-size: .63rem;
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--teal-lt);
+      margin-bottom: 14px;
+      padding-left: 2px;
+      animation: fadeUp .6s .25s ease both;
+    }
+
+    /* ── Cards ────────────────────────────────────────────────── */
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      background: var(--navy-card);
+      border: 1px solid rgba(28,138,151,.22);
+      border-radius: var(--radius);
+      text-decoration: none;
+      color: var(--white);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      transition:
+        transform var(--dur) cubic-bezier(.22,1,.36,1),
+        box-shadow var(--dur) ease,
+        border-color var(--dur) ease;
+      -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
+    }
+
+    /* Left teal accent bar */
+    .card::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--teal-lt), var(--teal));
+      opacity: 0;
+      transition: opacity var(--dur) ease;
+      z-index: 2;
+    }
+
+    .card:hover, .card:focus-visible {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(28,138,151,.35);
+      border-color: rgba(28,138,151,.55);
+      outline: none;
+    }
+    .card:hover::after { opacity: 1; }
+    .card:active { transform: scale(.975); box-shadow: var(--shadow-sm); }
+
+    /* ── Thumbnail ────────────────────────────────────────────── */
+    .card-thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--navy-mid);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .card-thumb img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .5s cubic-bezier(.22,1,.36,1), filter .3s ease;
+      filter: brightness(.82) saturate(.85);
+      z-index: 1;
+    }
+    .card:hover .card-thumb img {
+      transform: scale(1.05);
+      filter: brightness(.95) saturate(1.05);
+    }
+
+    .card-thumb::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 55%;
+      background: linear-gradient(to bottom, transparent, rgba(11,31,36,.95));
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .thumb-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #102830 0%, #0b1f24 100%);
+      z-index: 0;
+    }
+    .thumb-placeholder i { font-size: 2rem; color: var(--teal); opacity: .35; }
+    .thumb-placeholder span {
+      font-size: .6rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--white-dim);
+      opacity: .4;
+      text-align: center;
+      max-width: 180px;
+      line-height: 1.5;
+    }
+
+    .play-btn {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+    }
+    .play-btn-inner {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(11,31,36,.6);
+      border: 1.5px solid rgba(28,138,151,.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(6px);
+      transition: background var(--dur) ease, transform var(--dur) ease, border-color var(--dur) ease;
+    }
+    .card:hover .play-btn-inner {
+      background: rgba(28,138,151,.35);
+      border-color: var(--teal-lt);
+      transform: scale(1.13);
+    }
+    .play-btn-inner i { color: var(--white); font-size: 1.1rem; margin-left: 4px; }
+
+    /* ── Card body ────────────────────────────────────────────── */
+    .card-body {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px 16px;
+    }
+
+    .card-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--teal-dim);
+      border: 1px solid rgba(28,138,151,.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--dur) ease, border-color var(--dur) ease;
+    }
+    .card:hover .card-icon {
+      background: rgba(28,138,151,.28);
+      border-color: rgba(28,138,151,.6);
+    }
+    .card-icon i { font-size: 1rem; color: var(--teal-lt); }
+
+    .card-text { flex: 1; min-width: 0; }
+
+    .card-title-main {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 500;
+      line-height: 1.3;
+      margin-bottom: 2px;
+    }
+    .card-title-sub {
+      display: block;
+      font-size: .7rem;
+      font-weight: 300;
+      color: var(--white-dim);
+      margin-top: 1px;
+      letter-spacing: .03em;
+    }
+
+    .yt-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .6rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: rgba(255,100,80,.9);
+      margin-top: 5px;
+    }
+    .yt-badge i { font-size: .68rem; }
+
+    .card-arrow {
+      flex-shrink: 0;
+      color: var(--teal);
+      font-size: .8rem;
+      opacity: .5;
+      transition: opacity var(--dur) ease, transform var(--dur) ease;
+    }
+    .card:hover .card-arrow { opacity: 1; transform: translateX(4px); }
+
+    /* Stagger */
+    .cards .card:nth-child(1) { animation: fadeUp .55s .30s ease both; }
+    .cards .card:nth-child(2) { animation: fadeUp .55s .42s ease both; }
+    .cards .card:nth-child(3) { animation: fadeUp .55s .54s ease both; }
+    .cards .card:nth-child(4) { animation: fadeUp .55s .66s ease both; }
+
+    /* ── Divider ──────────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(28,138,151,.25) 30%, rgba(28,138,151,.25) 70%, transparent);
+      margin: 26px 0;
+      animation: fadeUp .6s .75s ease both;
+    }
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 0 0 44px;
+      animation: fadeUp .6s .8s ease both;
+    }
+
+    .footer-icon-ring {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(28,138,151,.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      background: var(--teal-dim);
+    }
+    .footer-icon-ring i { color: var(--teal-lt); font-size: .95rem; }
+
+    .footer-text {
+      font-size: .8rem;
+      font-weight: 300;
+      color: var(--white-dim);
+      line-height: 1.75;
+      letter-spacing: .02em;
+    }
+
+    .footer-dial {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--teal-lt);
+      letter-spacing: .05em;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .footer-copy {
+      margin-top: 24px;
+      font-size: .58rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(240,248,249,.18);
+    }
+
+    /* ── Language content visibility ──────────────────────────── */
+    [data-lang]      { display: none; }
+    span[data-lang]  { display: none; }
+
+    .lang-ja [data-lang="ja"],
+    .lang-en [data-lang="en"],
+    .lang-zh [data-lang="zh"],
+    .lang-es [data-lang="es"] { display: block; }
+
+    .lang-ja span[data-lang="ja"],
+    .lang-en span[data-lang="en"],
+    .lang-zh span[data-lang="zh"],
+    .lang-es span[data-lang="es"] { display: inline; }
+
+    /* ── Keyframes ────────────────────────────────────────────── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0ms !important; transition-duration: 0ms !important; }
+    }
+  </style>
+</head>
+
+<body class="lang-ja">
+<div class="page">
+
+  <!-- ── Language bar ─────────────────────────────────────────── -->
+  <div class="lang-bar">
+    <button class="lang-btn active" onclick="setLang('ja', this)">日本語</button>
+    <button class="lang-btn"        onclick="setLang('en', this)">English</button>
+    <button class="lang-btn"        onclick="setLang('zh', this)">中文</button>
+    <button class="lang-btn"        onclick="setLang('es', this)">Español</button>
+  </div>
+
+  <!-- ── Header ──────────────────────────────────────────────── -->
+  <header>
+    <p class="hotel-eyebrow">
+      <span data-lang="ja">ゲストサービス</span>
+      <span data-lang="en">Guest Services Portal</span>
+      <span data-lang="zh">宾客服务门户</span>
+      <span data-lang="es">Portal de Servicios</span>
+    </p>
+
+    <div class="hotel-name-ja">相鉄フレッサイン京都清水五条</div>
+    <div class="hotel-name-en">Sotetsu Fresa Inn Kyoto-Kiyomizu Gojo</div>
+
+    <div class="teal-rule">
+      <span></span>
+      <i class="fa-solid fa-diamond fa-xs"></i>
+      <span></span>
+    </div>
+
+    <p class="hotel-welcome">
+      <span data-lang="ja">ご滞在へようこそ。<br>本日はどのようなご用件でしょうか？</span>
+      <span data-lang="en">Welcome to your stay.<br>How can we help you today?</span>
+      <span data-lang="zh">欢迎入住。<br>今天有什么可以帮助您的吗？</span>
+      <span data-lang="es">Bienvenido a su estancia.<br>¿En qué podemos ayudarle hoy?</span>
+    </p>
+  </header>
+
+  <!-- ── Section label ────────────────────────────────────────── -->
+  <p class="section-label">
+    <i class="fa-brands fa-youtube" style="margin-right:6px;"></i>
+    <span data-lang="ja">動画ガイド</span>
+    <span data-lang="en">Video Guides</span>
+    <span data-lang="zh">视频指南</span>
+    <span data-lang="es">Guías en Video</span>
+  </p>
+
+  <!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  HOW TO ADD THUMBNAILS                                       ║
+  ║  YouTube URL: https://www.youtube.com/watch?v=XXXXXXXXXXX   ║
+  ║  Copy the 11-char ID and replace the placeholder below.     ║
+  ║  Also replace the href links with your real YouTube URLs.   ║
+  ╚══════════════════════════════════════════════════════════════╝
+  -->
+
+  <div class="cards">
+
+    <!-- Card 1 · Self Check-in Kiosk ───────────────────────── -->
+    <a class="card"
+       href="[INSERT_SELFCHECKIN_YOUTUBE_LINK_HERE]"
+       target="_blank" rel="noopener noreferrer">
+
+      <div class="card-thumb">
+        <div class="thumb-placeholder">
+          <i class="fa-solid fa-tablet-screen-button"></i>
+          <span>Add video ID for thumbnail</span>
+        </div>
+        <img
+          src="https://img.youtube.com/vi/SELFCHECKIN_VIDEO_ID/hqdefault.jpg"
+          alt="Self check-in kiosk video thumbnail"
+          loading="lazy"
+          onerror="this.style.display='none'"
+        />
+        <div class="play-btn"><div class="play-btn-inner"><i class="fa-solid fa-play"></i></div></div>
+      </div>
+
+      <div class="card-body">
+        <div class="card-icon"><i class="fa-solid fa-tablet-screen-button"></i></div>
+        <div class="card-text">
+          <span class="card-title-main" data-lang="ja">自動チェックイン機の使い方</span>
+          <span class="card-title-main" data-lang="en">How to Use the Self Check-in Kiosk</span>
+          <span class="card-title-main" data-lang="zh">如何使用自助办理入住机</span>
+          <span class="card-title-main" data-lang="es">Cómo Usar el Quiosco de Auto Check-in</span>
+
+          <span class="card-title-sub" data-lang="ja">フロントに並ばずスムーズにチェックイン</span>
+          <span class="card-title-sub" data-lang="en">Skip the queue — check in at your own pace</span>
+          <span class="card-title-sub" data-lang="zh">无需排队，快速自助办理入住</span>
+          <span class="card-title-sub" data-lang="es">Sin filas — haga su check-in a su propio ritmo</span>
+
+          <div class="yt-badge"><i class="fa-brands fa-youtube"></i>
+            <span data-lang="ja">動画を見る</span>
+            <span data-lang="en">Watch video</span>
+            <span data-lang="zh">观看视频</span>
+            <span data-lang="es">Ver video</span>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right card-arrow"></i>
+      </div>
+    </a>
+
+    <!-- Card 2 · Check Out ──────────────────────────────────── -->
+    <a class="card"
+       href="[INSERT_CHECKOUT_YOUTUBE_LINK_HERE]"
+       target="_blank" rel="noopener noreferrer">
+
+      <div class="card-thumb">
+        <div class="thumb-placeholder">
+          <i class="fa-solid fa-door-open"></i>
+          <span>Add video ID for thumbnail</span>
+        </div>
+        <img
+          src="https://img.youtube.com/vi/CHECKOUT_VIDEO_ID/hqdefault.jpg"
+          alt="Check out video thumbnail"
+          loading="lazy"
+          onerror="this.style.display='none'"
+        />
+        <div class="play-btn"><div class="play-btn-inner"><i class="fa-solid fa-play"></i></div></div>
+      </div>
+
+      <div class="card-body">
+        <div class="card-icon"><i class="fa-solid fa-door-open"></i></div>
+        <div class="card-text">
+          <span class="card-title-main" data-lang="ja">チェックアウト方法</span>
+          <span class="card-title-main" data-lang="en">How to Check Out</span>
+          <span class="card-title-main" data-lang="zh">如何办理退房</span>
+          <span class="card-title-main" data-lang="es">Cómo Hacer el Check-Out</span>
+
+          <span class="card-title-sub" data-lang="ja">退出手続きのご案内</span>
+          <span class="card-title-sub" data-lang="en">Step-by-step departure guide</span>
+          <span class="card-title-sub" data-lang="zh">逐步退房指引</span>
+          <span class="card-title-sub" data-lang="es">Guía paso a paso para salida</span>
+
+          <div class="yt-badge"><i class="fa-brands fa-youtube"></i>
+            <span data-lang="ja">動画を見る</span>
+            <span data-lang="en">Watch video</span>
+            <span data-lang="zh">观看视频</span>
+            <span data-lang="es">Ver video</span>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right card-arrow"></i>
+      </div>
+    </a>
+
+    <!-- Card 3 · Laundry ────────────────────────────────────── -->
+    <a class="card"
+       href="[INSERT_LAUNDRY_YOUTUBE_LINK_HERE]"
+       target="_blank" rel="noopener noreferrer">
+
+      <div class="card-thumb">
+        <div class="thumb-placeholder">
+          <i class="fa-solid fa-shirt"></i>
+          <span>Add video ID for thumbnail</span>
+        </div>
+        <img
+          src="https://img.youtube.com/vi/LAUNDRY_VIDEO_ID/hqdefault.jpg"
+          alt="Laundry room video thumbnail"
+          loading="lazy"
+          onerror="this.style.display='none'"
+        />
+        <div class="play-btn"><div class="play-btn-inner"><i class="fa-solid fa-play"></i></div></div>
+      </div>
+
+      <div class="card-body">
+        <div class="card-icon"><i class="fa-solid fa-shirt"></i></div>
+        <div class="card-text">
+          <span class="card-title-main" data-lang="ja">ランドリールームの使い方</span>
+          <span class="card-title-main" data-lang="en">How to Use the Laundry Room</span>
+          <span class="card-title-main" data-lang="zh">如何使用洗衣房</span>
+          <span class="card-title-main" data-lang="es">Cómo Usar la Lavandería</span>
+
+          <span class="card-title-sub" data-lang="ja">洗濯機・乾燥機のご利用方法</span>
+          <span class="card-title-sub" data-lang="en">Machines, detergent &amp; payment</span>
+          <span class="card-title-sub" data-lang="zh">洗衣机、洗涤剂及付款说明</span>
+          <span class="card-title-sub" data-lang="es">Máquinas, detergente y pago</span>
+
+          <div class="yt-badge"><i class="fa-brands fa-youtube"></i>
+            <span data-lang="ja">動画を見る</span>
+            <span data-lang="en">Watch video</span>
+            <span data-lang="zh">观看视频</span>
+            <span data-lang="es">Ver video</span>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right card-arrow"></i>
+      </div>
+    </a>
+
+    <!-- Card 4 · Luggage ────────────────────────────────────── -->
+    <a class="card"
+       href="[INSERT_LUGGAGE_YOUTUBE_LINK_HERE]"
+       target="_blank" rel="noopener noreferrer">
+
+      <div class="card-thumb">
+        <div class="thumb-placeholder">
+          <i class="fa-solid fa-suitcase-rolling"></i>
+          <span>Add video ID for thumbnail</span>
+        </div>
+        <img
+          src="https://img.youtube.com/vi/LUGGAGE_VIDEO_ID/hqdefault.jpg"
+          alt="Luggage service video thumbnail"
+          loading="lazy"
+          onerror="this.style.display='none'"
+        />
+        <div class="play-btn"><div class="play-btn-inner"><i class="fa-solid fa-play"></i></div></div>
+      </div>
+
+      <div class="card-body">
+        <div class="card-icon"><i class="fa-solid fa-suitcase-rolling"></i></div>
+        <div class="card-text">
+          <span class="card-title-main" data-lang="ja">荷物の発送方法</span>
+          <span class="card-title-main" data-lang="en">How to Send Luggage</span>
+          <span class="card-title-main" data-lang="zh">如何寄送行李</span>
+          <span class="card-title-main" data-lang="es">Cómo Enviar el Equipaje</span>
+
+          <span class="card-title-sub" data-lang="ja">お預かり・発送・お受け取りのご案内</span>
+          <span class="card-title-sub" data-lang="en">Storage, forwarding &amp; pickup</span>
+          <span class="card-title-sub" data-lang="zh">行李存放、转运及取件说明</span>
+          <span class="card-title-sub" data-lang="es">Almacenaje, envío y recogida</span>
+
+          <div class="yt-badge"><i class="fa-brands fa-youtube"></i>
+            <span data-lang="ja">動画を見る</span>
+            <span data-lang="en">Watch video</span>
+            <span data-lang="zh">观看视频</span>
+            <span data-lang="es">Ver video</span>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right card-arrow"></i>
+      </div>
+    </a>
+
+  </div><!-- /cards -->
+
+  <div class="divider"></div>
+
+  <!-- ── Footer ──────────────────────────────────────────────── -->
+  <footer>
+    <div class="footer-icon-ring">
+      <i class="fa-solid fa-phone-volume"></i>
+    </div>
+    <p class="footer-text">
+      <span data-lang="ja">
+        お困りのことがございましたら<br>
+        <span class="footer-dial">客室の電話で「0」番へ</span>
+        24時間スタッフが対応いたします
+      </span>
+      <span data-lang="en">
+        Need immediate assistance?<br>
+        <span class="footer-dial">Dial 0 from your room phone</span>
+        Our team is available 24 hours a day.
+      </span>
+      <span data-lang="zh">
+        需要即时帮助？<br>
+        <span class="footer-dial">请拨打房间电话「0」</span>
+        我们的团队全天24小时为您服务。
+      </span>
+      <span data-lang="es">
+        ¿Necesita asistencia inmediata?<br>
+        <span class="footer-dial">Marque 0 desde su teléfono</span>
+        Nuestro equipo está disponible las 24 horas.
+      </span>
+    </p>
+    <p class="footer-copy">© 相鉄フレッサイン京都清水五条 &nbsp;·&nbsp; Sotetsu Fresa Inn</p>
+  </footer>
+
+</div><!-- /page -->
+
+<script>
+  function setLang(lang, btn) {
+    document.body.className = 'lang-' + lang;
+    document.documentElement.lang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>
